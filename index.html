@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Aperturas de Diligencias</title>
+    <title>SGP - Aperturas de Flagrancia</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/docxtemplater/3.28.5/docxtemplater.js"></script>
     <script src="https://unpkg.com/pizzip@3.1.1/dist/pizzip.js"></script>
@@ -12,50 +12,92 @@
     
     <style>
         :root {
-            --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; --primary: #0284c7;
-            --success: #16a34a; --border: #cbd5e1; --label: #475569;
+            --bg: #f8fafc; --card: #ffffff; --text: #0f172a; --primary: #2563eb;
+            --success: #059669; --border: #e2e8f0; --label: #64748b; --accent: #dbeafe;
         }
+
         body.dark-mode {
-            --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; --primary: #38bdf8;
-            --success: #10b981; --border: #334155; --label: #94a3b8;
+            --bg: #020617; --card: #1e293b; --text: #f8fafc; --primary: #60a5fa;
+            --success: #10b981; --border: #334155; --label: #94a3b8; --accent: #1e293b;
         }
-        * { box-sizing: border-box; transition: 0.2s ease; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .app-container { width: 100%; max-width: 900px; background: var(--card); padding: 35px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .theme-toggle { align-self: flex-end; margin-bottom: 10px; background: var(--card); border: 1px solid var(--border); padding: 8px 15px; border-radius: 50px; cursor: pointer; color: var(--text); font-weight: 600; font-size: 0.8rem; display: flex; align-items: center; gap: 8px; }
-        h1 { font-size: 1.8rem; color: var(--primary); text-align: center; margin-top: 0; text-transform: uppercase; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-top: 15px; }
-        label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--label); margin-bottom: 5px; text-transform: uppercase; }
-        input, textarea, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 1rem; }
-        .info-pills { background: rgba(2, 132, 199, 0.1); padding: 10px; border-radius: 8px; margin-top: 5px; font-size: 0.85rem; color: var(--primary); font-weight: 600; }
-        .btn-main { width: 100%; background: var(--primary); color: white; padding: 18px; border-radius: 12px; border: none; font-size: 1.1rem; font-weight: 700; cursor: pointer; margin-top: 25px; }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
-        .modal-content { background: var(--card); width: 100%; max-width: 600px; padding: 30px; border-radius: 20px; }
-        .resumen-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
-        .modal-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; }
-        .btn-edit { background: #64748b; color: white; padding: 12px; border-radius: 10px; border: none; cursor: pointer; }
-        .btn-confirm { background: var(--success); color: white; padding: 12px; border-radius: 10px; border: none; cursor: pointer; font-weight: 700; }
+
+        * { box-sizing: border-box; transition: all 0.2s ease; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+
+        .app-container { width: 100%; max-width: 850px; background: var(--card); padding: 40px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); margin: 20px 0; }
+        
+        .header { text-align: center; margin-bottom: 35px; }
+        h1 { font-size: 2.2rem; color: var(--primary); margin: 0; letter-spacing: -1px; }
+        .subtitle { font-size: 1rem; color: var(--label); font-weight: 500; margin-top: 5px; text-transform: uppercase; }
+
+        .theme-toggle { align-self: flex-end; background: var(--card); border: 2px solid var(--border); padding: 10px 20px; border-radius: 50px; cursor: pointer; color: var(--text); font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+
+        .section-title { font-size: 0.8rem; font-weight: 800; color: var(--primary); text-transform: uppercase; margin: 30px 0 15px 0; border-bottom: 2px solid var(--accent); padding-bottom: 5px; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+        
+        .field-group { display: flex; flex-direction: column; }
+        label { font-size: 0.75rem; font-weight: 700; color: var(--label); margin-bottom: 8px; text-transform: uppercase; margin-left: 5px; }
+        
+        input, textarea, select { width: 100%; padding: 14px 18px; border-radius: 12px; border: 2px solid var(--border); background: var(--bg); color: var(--text); font-size: 1.05rem; font-family: inherit; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px var(--accent); }
+
+        /* Pills Informativas */
+        .info-pill { background: var(--accent); padding: 8px 15px; border-radius: 8px; margin-top: 8px; font-size: 0.85rem; color: var(--primary); font-weight: 700; display: inline-flex; align-items: center; gap: 6px; width: fit-content; }
+
+        /* Selector de Firma Estilo Premium */
+        .option-card { background: var(--bg); border: 2px solid var(--border); padding: 20px; border-radius: 15px; margin: 25px 0; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+        .option-card.active { border-color: var(--success); background: rgba(5, 150, 105, 0.05); }
+        .option-text { display: flex; flex-direction: column; }
+        .option-title { font-weight: 700; font-size: 1.1rem; }
+        .option-desc { font-size: 0.85rem; color: var(--label); }
+
+        .switch { position: relative; width: 50px; height: 26px; background: #94a3b8; border-radius: 20px; }
+        .switch::after { content: ''; position: absolute; width: 20px; height: 20px; background: white; border-radius: 50%; top: 3px; left: 3px; transition: 0.3s; }
+        input:checked + .option-card .switch { background: var(--success); }
+        input:checked + .option-card .switch::after { transform: translateX(24px); }
+
+        .btn-main { width: 100%; background: var(--primary); color: white; padding: 20px; border-radius: 15px; border: none; font-size: 1.2rem; font-weight: 700; cursor: pointer; margin-top: 30px; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2); }
+        .btn-main:hover { transform: translateY(-3px); filter: brightness(1.1); }
+
+        /* Modal Resumen */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(8px); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: var(--card); width: 100%; max-width: 650px; padding: 40px; border-radius: 24px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); border: 1px solid var(--border); }
+        .resumen-list { margin: 20px 0; }
+        .resumen-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); gap: 20px; }
+        .resumen-l { font-size: 0.8rem; font-weight: 700; color: var(--label); text-transform: uppercase; }
+        .resumen-v { font-size: 1.05rem; font-weight: 600; text-align: right; }
+
+        .modal-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px; }
+        .btn-cancel { background: #64748b; color: white; padding: 15px; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; }
+        .btn-go { background: var(--success); color: white; padding: 15px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; font-size: 1.1rem; }
     </style>
 </head>
 <body>
 
-<button class="theme-toggle" onclick="document.body.classList.toggle('dark-mode')">🌓 CAMBIAR MODO</button>
+<button class="theme-toggle" onclick="document.body.classList.toggle('dark-mode')">
+    🌓 CAMBIAR MODO DE VISTA
+</button>
 
 <div class="app-container">
-    <h1>⚖️ APERTURAS - FLAGRANCIA</h1>
+    <div class="header">
+        <h1>⚖️ SGP - APERTURAS</h1>
+        <div class="subtitle">Unidad de Flagrancia de Piura</div>
+    </div>
     
     <form id="docForm">
+        <div class="section-title">📍 Ubicación y Responsables</div>
         <div class="grid">
-            <div>
-                <label>Fiscalía</label>
+            <div class="field-group">
+                <label>N° Fiscalía</label>
                 <select id="num_fiscalia">
-                    <option value="PRIMERA">PRIMERA</option>
-                    <option value="SEGUNDA">SEGUNDA</option>
-                    <option value="TERCERA">TERCERA</option>
+                    <option value="PRIMERA">PRIMERA FISCALÍA</option>
+                    <option value="SEGUNDA">SEGUNDA FISCALÍA</option>
+                    <option value="TERCERA">TERCERA FISCALÍA</option>
                 </select>
             </div>
-            <div>
-                <label>Comisaría PNP</label>
+            <div class="field-group">
+                <label>Comisaría / PNP</label>
                 <select id="personal_pnp">
                     <option value="CPNP CASTILLA">CPNP CASTILLA</option>
                     <option value="CPNP PIURA">CPNP PIURA</option>
@@ -66,84 +108,92 @@
             </div>
         </div>
 
-        <div class="grid">
-            <div>
+        <div class="grid" style="margin-top: 15px;">
+            <div class="field-group">
                 <label>Fiscal Responsable</label>
-                <select id="nombre_fiscal" onchange="actualizarIniciales()">
+                <select id="nombre_fiscal" onchange="updateUI()">
                     <option value="DRA. SARA RUTH YARLEQUÉ ADRIANZE">DRA. SARA RUTH YARLEQUÉ ADRIANZE</option>
                     <option value="FISCAL ADJUNTO 1">FISCAL ADJUNTO 1</option>
                     <option value="FISCAL ADJUNTO 2">FISCAL ADJUNTO 2</option>
                     <option value="FISCAL ADJUNTO 3">FISCAL ADJUNTO 3</option>
                 </select>
-                <div id="pill_iniciales" class="info-pills">Iniciales: SYRA</div>
+                <div id="pill_iniciales" class="info-pill">🏷️ Iniciales: SYRA</div>
             </div>
-            <div>
-                <label>N° de Caso</label>
-                <input type="text" id="num_caso" placeholder="Ej: 456-2026">
+            <div class="field-group">
+                <label>N° de Caso (SGF)</label>
+                <input type="text" id="num_caso" placeholder="Ej: 506014502-2026-...">
             </div>
         </div>
 
+        <div class="section-title">👤 Datos del Detenido</div>
         <div class="grid">
-            <div>
-                <label>Nombre Imputado</label>
-                <input type="text" id="nombre_imputado">
+            <div class="field-group">
+                <label>Nombre del Imputado</label>
+                <input type="text" id="nombre_imputado" placeholder="Nombres y Apellidos">
             </div>
-            <div>
+            <div class="field-group">
                 <label>DNI</label>
-                <input type="text" id="dni" maxlength="8">
+                <input type="text" id="dni" maxlength="8" placeholder="00000000">
             </div>
         </div>
 
+        <div class="section-title">🕒 Plazos y Fechas</div>
         <div class="grid">
-            <div>
-                <label>Fecha Disposición</label>
+            <div class="field-group">
+                <label>Fecha de Disposición</label>
                 <input type="text" id="fecha_disp">
             </div>
-            <div>
+            <div class="field-group">
                 <label>Horas de Detención</label>
-                <select id="horas_val" onchange="actualizarHorasTexto()">
+                <select id="horas_val" onchange="updateUI()">
                     <option value="24">24 HORAS</option>
                     <option value="48" selected>48 HORAS</option>
                 </select>
-                <div id="pill_horas" class="info-pills">En Word: 48 (CUARENTA Y OCHO) HORAS</div>
+                <div id="pill_horas" class="info-pill">📝 Texto: 48 (CUARENTA Y OCHO) HORAS</div>
             </div>
         </div>
 
-        <div style="margin-top:15px;">
-            <label>Hechos</label>
-            <textarea id="hechos" rows="4"></textarea>
+        <div class="field-group" style="margin-top: 25px;">
+            <label>Hechos Materia de Investigación</label>
+            <textarea id="hechos" rows="5" placeholder="Describa brevemente la intervención..."></textarea>
         </div>
 
-        <label class="option-box">
-            <input type="checkbox" id="check_firma" hidden>
+        <input type="checkbox" id="check_firma" hidden onchange="this.nextElementSibling.classList.toggle('active')">
+        <label for="check_firma" class="option-card">
+            <div class="option-text">
+                <span class="option-title">¿Incluir Firma Digital?</span>
+                <span id="label_archivo" class="option-desc">Se usará: MODELO_UNO.docx</span>
+            </div>
             <div class="switch"></div>
-            <strong>¿Consignar Firma Digital?</strong>
         </label>
 
-        <button type="button" class="btn-main" onclick="abrirResumen()">🔍 REVISAR Y GENERAR</button>
+        <button type="button" class="btn-main" onclick="abrirResumen()">🔍 VER RESUMEN Y GENERAR WORD</button>
     </form>
 </div>
 
 <div id="modalResumen" class="modal">
     <div class="modal-content">
-        <h2 style="text-align:center">Resumen de Apertura</h2>
-        <div id="listaResumen"></div>
+        <h2 style="margin:0; color: var(--primary)">FICHA DE CONTROL</h2>
+        <p style="color: var(--label); margin-bottom: 25px;">Revise que los datos sean correctos antes de generar el archivo.</p>
+        
+        <div class="resumen-list" id="listaResumen"></div>
+
         <div class="modal-btns">
-            <button class="btn-edit" onclick="cerrarResumen()">CORREGIR</button>
-            <button class="btn-confirm" onclick="procesarWord()">CONFIRMAR Y DESCARGAR</button>
+            <button class="btn-cancel" onclick="cerrarResumen()">MODIFICAR</button>
+            <button class="btn-go" onclick="procesarWord()">CONFIRMAR Y DESCARGAR</button>
         </div>
     </div>
 </div>
 
 <script>
-    const fiscalInfo = {
+    const fiscalMapping = {
         "DRA. SARA RUTH YARLEQUÉ ADRIANZE": "SYRA",
         "FISCAL ADJUNTO 1": "FA1",
         "FISCAL ADJUNTO 2": "FA2",
         "FISCAL ADJUNTO 3": "FA3"
     };
 
-    const horasLetras = {
+    const horasMapping = {
         "24": "24 (VEINTICUATRO) HORAS",
         "48": "48 (CUARENTA Y OCHO) HORAS"
     };
@@ -152,30 +202,43 @@
         const meses = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
         const f = new Date();
         document.getElementById('fecha_disp').value = `Piura, ${f.getDate()} de ${meses[f.getMonth()]} de ${f.getFullYear()}`;
-        actualizarIniciales();
-        actualizarHorasTexto();
+        updateUI();
     };
 
-    function actualizarIniciales() {
-        const fiscal = document.getElementById('nombre_fiscal').value;
-        const iniciales = fiscalInfo[fiscal] || "---";
-        document.getElementById('pill_iniciales').innerText = `Iniciales: ${iniciales}`;
-    }
+    function updateUI() {
+        // Iniciales
+        const fName = document.getElementById('nombre_fiscal').value;
+        const ini = fiscalMapping[fName] || "---";
+        document.getElementById('pill_iniciales').innerText = `🏷️ Iniciales: ${ini}`;
+        
+        // Horas
+        const hVal = document.getElementById('horas_val').value;
+        const hTxt = horasMapping[hVal];
+        document.getElementById('pill_horas').innerText = `📝 Texto: ${hTxt}`;
 
-    function actualizarHorasTexto() {
-        const val = document.getElementById('horas_val').value;
-        document.getElementById('pill_horas').innerText = `En Word: ${horasLetras[val]}`;
+        // Label Archivo
+        const conFirma = document.getElementById('check_firma').checked;
+        document.getElementById('label_archivo').innerText = `Se usará: ${conFirma ? 'MODELO_FIRMADO.docx' : 'MODELO_UNO.docx'}`;
     }
 
     function abrirResumen() {
-        const dataResumen = [
+        if(!document.getElementById('nombre_imputado').value) return alert("Ingrese el nombre del imputado");
+        
+        const res = [
             { l: "Imputado", v: document.getElementById('nombre_imputado').value.toUpperCase() },
+            { l: "Caso SGF", v: document.getElementById('num_caso').value },
             { l: "Fiscal", v: document.getElementById('nombre_fiscal').value },
-            { l: "Iniciales", v: fiscalInfo[document.getElementById('nombre_fiscal').value] },
-            { l: "Plazo", v: horasLetras[document.getElementById('horas_val').value] },
-            { l: "Firma", v: document.getElementById('check_firma').checked ? "SÍ" : "NO" }
+            { l: "Plazo", v: horasMapping[document.getElementById('horas_val').value] },
+            { l: "Archivo", v: document.getElementById('check_firma').checked ? "MODELO_FIRMADO (CON FIRMA)" : "MODELO_UNO (SIN FIRMA)" }
         ];
-        document.getElementById('listaResumen').innerHTML = dataResumen.map(i => `<div class="resumen-item"><b>${i.l}:</b> <span>${i.v}</span></div>`).join('');
+
+        document.getElementById('listaResumen').innerHTML = res.map(i => `
+            <div class="resumen-row">
+                <span class="resumen-l">${i.l}</span>
+                <span class="resumen-v">${i.v}</span>
+            </div>
+        `).join('');
+        
         document.getElementById('modalResumen').style.display = 'flex';
     }
 
@@ -185,37 +248,49 @@
         cerrarResumen();
         const conFirma = document.getElementById('check_firma').checked;
         const archivo = conFirma ? 'MODELO_FIRMADO.docx' : 'MODELO_UNO.docx';
-        const fiscalSel = document.getElementById('nombre_fiscal').value;
-        const nombreImp = document.getElementById('nombre_imputado').value.toUpperCase();
+        const nombreImp = document.getElementById('nombre_imputado').value.toUpperCase().trim();
 
         const data = {
             NUMERO_FISCALIA: document.getElementById('num_fiscalia').value,
             PERSONAL_PNP: document.getElementById('personal_pnp').value,
-            NOMBRE_FISCAL: fiscalSel,
+            NOMBRE_FISCAL: document.getElementById('nombre_fiscal').value,
             NUMERO_CASO: document.getElementById('num_caso').value,
             NOMBRE_IMPUTADO: nombreImp,
             NUMERO_DNI: document.getElementById('dni').value,
             FECHA_DISPOSICION: document.getElementById('fecha_disp').value,
             HECHOS: document.getElementById('hechos').value,
-            HORAS_DETENCION: horasLetras[document.getElementById('horas_val').value],
-            INCIALES_FISCAL: fiscalInfo[fiscalSel]
+            HORAS_DETENCION: horasMapping[document.getElementById('horas_val').value],
+            INCIALES_FISCAL: fiscalMapping[document.getElementById('nombre_fiscal').value]
         };
 
         try {
             const resp = await fetch(archivo);
+            if(!resp.ok) throw new Error("No se encontró el archivo .docx en GitHub");
+            
             const content = await resp.arrayBuffer();
             const zip = new PizZip(content);
             const doc = new window.docxtemplater(zip, { paragraphLoop: true, linebreaks: true });
+            
             doc.render(data);
+
             const out = doc.getZip().generate({ 
-                type: "blob", 
+                type: "blob",
                 mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                 compression: "DEFLATE"
             });
-            const file = new File([out], `APERTURA_${nombreImp.replace(/\s+/g, '_')}.docx`);
-            saveAs(file, file.name);
-        } catch (e) { alert("Error: Verifica los archivos .docx en tu GitHub."); }
+
+            // Parche móvil
+            const fileName = `APERTURA_${nombreImp.replace(/\s+/g, '_')}.docx`;
+            const file = new File([out], fileName, { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+            
+            saveAs(file, fileName);
+
+        } catch (error) {
+            console.error(error);
+            alert("❌ Error: Verifica que los archivos MODELO_UNO.docx y MODELO_FIRMADO.docx estén en tu GitHub.");
+        }
     }
 </script>
+
 </body>
 </html>
